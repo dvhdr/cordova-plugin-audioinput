@@ -101,14 +101,15 @@
 
 - (void)stop:(CDVInvokedUrlCommand*)command
 {
+
     [self.commandDelegate runInBackground:^{
         [self.audioReceiver stop];
 
-        if (self.callbackId) {
-            CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDouble:0.0f];
+        if (command.callbackId) {
+            CDVPluginResult* result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:_fileUrl];
 	    /* if we are recording directly to file, we want to keep the callback */
             [result setKeepCallbackAsBool:(_fileUrl == nil?NO:YES)];
-            [self.commandDelegate sendPluginResult:result callbackId:self.callbackId];
+            [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
         }
 
 	if (_fileUrl == nil) {

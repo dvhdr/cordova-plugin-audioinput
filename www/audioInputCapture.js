@@ -9,6 +9,7 @@ var audioinput = {};
 audioinput.FORMAT = {
     PCM_16BIT: 'PCM_16BIT',
     PCM_8BIT: 'PCM_8BIT',
+    PCM_24BIT: 'PCM_24BIT',
     PCM_32BIT: 'PCM_32BIT'
 };
 
@@ -82,8 +83,8 @@ audioinput.initialize = function (cfg, onComplete) {
         throw "Invalid number of channels (" + audioinput._cfg.channels + "). Only mono (1) and stereo (2) and (8) is" +
             " supported.";
     }
-    else if (audioinput._cfg.format != "PCM_16BIT" && audioinput._cfg.format != "PCM_8BIT"&& audioinput._cfg.format != "PCM_32BIT") {
-        throw "Invalid format (" + audioinput._cfg.format + "). Only 'PCM_8BIT' and 'PCM_16BIT'  and 'PCM_32BIT' is" +
+    else if (audioinput._cfg.format != "PCM_16BIT" && audioinput._cfg.format != "PCM_8BIT" && audioinput._cfg.format != "PCM_24BIT" && audioinput._cfg.format != "PCM_32BIT") {
+        throw "Invalid format (" + audioinput._cfg.format + "). Only 'PCM_8BIT', 'PCM_16BIT' , 'PCM_24BIT'  and 'PCM_32BIT' is" +
             " supported.";
     }
 
@@ -164,8 +165,8 @@ audioinput.start = function (cfg) {
             throw "Invalid number of channels (" + audioinput._cfg.channels + "). Only mono (1) and stereo (2) and octo(8) is" +
             " supported.";
         }
-        else if (audioinput._cfg.format != "PCM_16BIT" && audioinput._cfg.format != "PCM_8BIT" && audioinput._cfg.format != "PCM_32BIT") {
-            throw "Invalid format (" + audioinput._cfg.format + "). Only 'PCM_8BIT' and 'PCM_16BIT'  and 'PCM_32BIT' is" +
+        else if (audioinput._cfg.format != "PCM_16BIT" && audioinput._cfg.format != "PCM_24BIT" && audioinput._cfg.format != "PCM_8BIT" && audioinput._cfg.format != "PCM_32BIT") {
+            throw "Invalid format (" + audioinput._cfg.format + "). Only 'PCM_8BIT', 'PCM_16BIT', 'PCM_24BIT'  and 'PCM_32BIT' is" +
             " supported.";
         }
 

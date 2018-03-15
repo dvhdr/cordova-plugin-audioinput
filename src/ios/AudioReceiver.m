@@ -87,6 +87,9 @@ void HandleInputBuffer(void* inUserData,
         if([format isEqualToString:@"PCM_8BIT"]){
             bitRate = 8;
         }
+        if([format isEqualToString:@"PCM_24BIT"]){
+            bitRate = 24;
+        }
         if([format isEqualToString:@"PCM_32BIT"]){
             bitRate = 32;
         }

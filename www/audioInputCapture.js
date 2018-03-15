@@ -8,12 +8,14 @@ var audioinput = {};
 // Supported audio formats
 audioinput.FORMAT = {
     PCM_16BIT: 'PCM_16BIT',
-    PCM_8BIT: 'PCM_8BIT'
+    PCM_8BIT: 'PCM_8BIT',
+    PCM_32BIT: 'PCM_32BIT'
 };
 
 audioinput.CHANNELS = {
     MONO: 1,
-    STEREO: 2
+    STEREO: 2,
+    OCTO: 8
 };
 
 // Common Sampling rates
@@ -25,7 +27,8 @@ audioinput.SAMPLERATE = {
     MINI_DV_32000Hz: 32000,
     CD_XA_37800Hz: 37800,
     NTSC_44056Hz: 44056,
-    CD_AUDIO_44100Hz: 44100
+    CD_AUDIO_44100Hz: 44100,
+    HI_RES: 48000,
 };
 
 // Audio Source types
@@ -35,7 +38,8 @@ audioinput.AUDIOSOURCE_TYPE = {
     MIC: 1,
     UNPROCESSED: 9,
     VOICE_COMMUNICATION: 7,
-    VOICE_RECOGNITION: 6
+    VOICE_RECOGNITION: 6,
+    CUSTOM:10
 };
 
 // Default values
@@ -60,7 +64,7 @@ audioinput.initialize = function (cfg, onComplete) {
     console.log("audioinput.initialize");
     if (!cfg) {
         cfg = {};
-    }    
+    }
     audioinput._cfg = {};
     audioinput._cfg.sampleRate = cfg.sampleRate || audioinput.DEFAULT.SAMPLERATE;
     audioinput._cfg.bufferSize = cfg.bufferSize || audioinput.DEFAULT.BUFFER_SIZE;
@@ -73,20 +77,20 @@ audioinput.initialize = function (cfg, onComplete) {
     audioinput._cfg.concatenateMaxChunks = cfg.concatenateMaxChunks || audioinput.DEFAULT.CONCATENATE_MAX_CHUNKS;
     audioinput._cfg.audioSourceType = cfg.audioSourceType || 0;
     audioinput._cfg.fileUrl = cfg.fileUrl || null;
-    
-    if (audioinput._cfg.channels < 1 && audioinput._cfg.channels > 2) {
-        throw "Invalid number of channels (" + audioinput._cfg.channels + "). Only mono (1) and stereo (2) is" +
+
+    if (audioinput._cfg.channels < 1 && audioinput._cfg.channels > 8) {
+        throw "Invalid number of channels (" + audioinput._cfg.channels + "). Only mono (1) and stereo (2) and (8) is" +
             " supported.";
     }
-    else if (audioinput._cfg.format != "PCM_16BIT" && audioinput._cfg.format != "PCM_8BIT") {
-        throw "Invalid format (" + audioinput._cfg.format + "). Only 'PCM_8BIT' and 'PCM_16BIT' is" +
+    else if (audioinput._cfg.format != "PCM_16BIT" && audioinput._cfg.format != "PCM_8BIT"&& audioinput._cfg.format != "PCM_32BIT") {
+        throw "Invalid format (" + audioinput._cfg.format + "). Only 'PCM_8BIT' and 'PCM_16BIT'  and 'PCM_32BIT' is" +
             " supported.";
     }
-    
+
     if (audioinput._cfg.bufferSize <= 0) {
         throw "Invalid bufferSize (" + audioinput._cfg.bufferSize + "). Must be greater than zero.";
     }
-    
+
     if (audioinput._cfg.concatenateMaxChunks <= 0) {
         throw "Invalid concatenateMaxChunks (" + audioinput._cfg.concatenateMaxChunks + "). Must be greater than zero.";
     }
@@ -156,12 +160,12 @@ audioinput.start = function (cfg) {
         audioinput._cfg.audioSourceType = cfg.audioSourceType || 0;
         audioinput._cfg.fileUrl = cfg.fileUrl || null;
 
-        if (audioinput._cfg.channels < 1 && audioinput._cfg.channels > 2) {
-            throw "Invalid number of channels (" + audioinput._cfg.channels + "). Only mono (1) and stereo (2) is" +
+        if (audioinput._cfg.channels < 1 && audioinput._cfg.channels > 8) {
+            throw "Invalid number of channels (" + audioinput._cfg.channels + "). Only mono (1) and stereo (2) and octo(8) is" +
             " supported.";
         }
-        else if (audioinput._cfg.format != "PCM_16BIT" && audioinput._cfg.format != "PCM_8BIT") {
-            throw "Invalid format (" + audioinput._cfg.format + "). Only 'PCM_8BIT' and 'PCM_16BIT' is" +
+        else if (audioinput._cfg.format != "PCM_16BIT" && audioinput._cfg.format != "PCM_8BIT" && audioinput._cfg.format != "PCM_32BIT") {
+            throw "Invalid format (" + audioinput._cfg.format + "). Only 'PCM_8BIT' and 'PCM_16BIT'  and 'PCM_32BIT' is" +
             " supported.";
         }
 
@@ -187,6 +191,7 @@ audioinput.start = function (cfg) {
             if (audioinput._initWebAudio(audioinput._cfg.audioContext)) {
                 audioinput._audioDataQueue = [];
                 audioinput._getNextToPlay();
+                audioinput.context = audioinput._cfg.audioContext;
             }
             else {
                 throw "The Web Audio API is not supported on this platform!";
